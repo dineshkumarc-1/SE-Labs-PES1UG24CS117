@@ -16,7 +16,7 @@
 
 | Lab | Topic / Title | Deliverables | Status |
 | :---: | :--- | :--- | :---: |
-| **Lab 1** | **Requirements Engineering & UML Use-Case Modelling** | [Lab-1 Folder](Lab-1/) &bull; [PDF Report](Lab-1/PES1UG24CS117_Lab1_Report.pdf) | `Completed` |
+| **Lab 1** | **Requirements Engineering & UML Use-Case Modelling** | [Lab-1 Folder](Lab-1/) &bull; [PDF Report](Lab-1/PES1UG24CS117_Lab1_Report.pdf) &bull; [Diagram PDF](Lab-1/use_case_diagram.pdf) | `Completed` |
 
 ---
 
@@ -25,8 +25,8 @@
 ## 1. Problem Statement & Context
 A clean energy sharing portal ingesting rooftop solar generation metrics, facilitating peer-to-peer solar credit transfers within a neighborhood microgrid, and tracking monthly utility billing offsets.
 
-- **Primary Stakeholders & Actors:** Prosumer Resident (Co-op Member), Co-op Manager, Smart Meter System, External Utility / Billing System.
-- **Goal:** Provide a dependable, transparent accounting and allocation platform for residential microgrids.
+- **Target Stakeholders & Actors:** Prosumer Resident (Co-op Member), Co-op Manager, Smart Meter System, External Utility / Billing System.
+- **System Goal:** Provide a dependable, transparent accounting and allocation platform for residential microgrids.
 
 ---
 
@@ -53,7 +53,49 @@ A clean energy sharing portal ingesting rooftop solar generation metrics, facili
 4. **External System (Utility / Billing):** External integration partner responsible for applying solar offsets to monthly consumer utility statements.
 
 ### Use-Case Diagram
-![UML Use-Case Diagram](Lab-1/use_case_diagram.png)
+```mermaid
+graph TD
+    classDef actor fill:#e8f0fe,stroke:#1a73e8,stroke-width:2px;
+    classDef usecase fill:#f1f3f4,stroke:#5f6368,stroke-width:1.5px;
+
+    Prosumer["🧑 Prosumer Resident<br>(Co-op Member)"]:::actor
+    Manager["👨‍💼 Co-op Manager"]:::actor
+    SmartMeter["⚡ Smart Meter System"]:::actor
+    Utility["🏢 External System<br>(Utility / Billing)"]:::actor
+
+    subgraph System["Community Solar Credit Allocation Manager"]
+        UC1(["Register / Login"]):::usecase
+        UC2(["View Dashboard"]):::usecase
+        UC3(["View Credit Balance & History"]):::usecase
+        UC4(["Transfer Solar Credits (UC-03)"]):::usecase
+        UC5(["Validate Credit Balance"]):::usecase
+        UC6(["Verify Recipient Eligibility"]):::usecase
+        UC7(["Record Credit Transaction"]):::usecase
+        UC8(["View Billing Offset & Statements"]):::usecase
+        UC9(["Generate Monthly Billing Statement"]):::usecase
+        UC10(["Submit Solar Generation Data"]):::usecase
+        UC11(["Generate Reports"]):::usecase
+    end
+
+    Prosumer --- UC1
+    Prosumer --- UC2
+    Prosumer --- UC3
+    Prosumer --- UC4
+    Prosumer --- UC8
+
+    Manager --- UC1
+    Manager --- UC2
+    Manager --- UC11
+
+    SmartMeter --- UC10
+    Utility --- UC9
+
+    UC4 -.->|«include»| UC5
+    UC4 -.->|«include»| UC6
+    UC4 -.->|«include»| UC7
+
+    UC9 -.->|«extend»| UC8
+```
 
 ### Key Stereotypes
 - **`«include»` Relationships:**
@@ -108,15 +150,11 @@ A clean energy sharing portal ingesting rooftop solar generation metrics, facili
 
 ---
 
-## 5. Lab 1 Deliverables Summary
+## 5. Lab 1 Deliverables
 
-All deliverables for Lab 1 are available directly inside the [`Lab-1/`](Lab-1/) directory:
+All deliverables for Lab 1 are available inside the [`Lab-1/`](Lab-1/) directory:
 
-| Deliverable | File Link | Description |
+| Deliverable | File Link | Format / Description |
 | :--- | :--- | :--- |
-| **Consolidated PDF Report** | [`PES1UG24CS117_Lab1_Report.pdf`](Lab-1/PES1UG24CS117_Lab1_Report.pdf) | Formal compiled 3-page submission report |
-| **Requirements Table (Word)** | [`Requirements_Traceability_Table.docx`](Lab-1/Requirements_Traceability_Table.docx) | Full editable requirements document (`.docx`) |
-| **Requirements Table (Excel)** | [`Requirements_Table.xlsx`](Lab-1/Requirements_Table.xlsx) | Structured spreadsheet version (`.xlsx`) |
-| **UML Diagram (Vector PDF)** | [`use_case_diagram.pdf`](Lab-1/use_case_diagram.pdf) | High-definition vector PDF diagram |
-| **UML Diagram (Image)** | [`use_case_diagram.png`](Lab-1/use_case_diagram.png) | High-resolution PNG image |
-| **Use-Case Flow Document** | [`UseCase_Flow_Specification_UC03.docx`](Lab-1/UseCase_Flow_Specification_UC03.docx) | 1-page Word document for `UC-03` |
+| **Consolidated Lab Report** | [`PES1UG24CS117_Lab1_Report.pdf`](Lab-1/PES1UG24CS117_Lab1_Report.pdf) | Formal compiled 3-page submission report containing Requirements Table, Use-Case Diagram, and Flow Specification |
+| **UML Use-Case Diagram** | [`use_case_diagram.pdf`](Lab-1/use_case_diagram.pdf) | Vector PDF export of the complete UML Use-Case Diagram |
