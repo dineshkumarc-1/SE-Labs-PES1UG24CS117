@@ -1,0 +1,61 @@
+@startuml Community_Solar_Credit_Allocation_Manager_Use_Case
+left to right direction
+skinparam packageStyle rectangle
+skinparam shadowing false
+skinparam roundcorner 10
+skinparam actorStyle awesome
+
+skinparam usecase {
+    BackgroundColor #F8FAFC
+    BorderColor #2563EB
+    BorderThickness 1.5
+    FontSize 12
+}
+
+actor "Prosumer Resident\n(Co-op Member)" as Prosumer
+actor "Co-op Manager" as Manager
+actor "External System\n(Utility / Billing)" as Utility
+actor "Smart Meter System" as SmartMeter
+
+rectangle "Community Solar Credit Allocation Manager" {
+    usecase "Register / Login" as UC_Login
+    usecase "View Dashboard" as UC_Dashboard
+    usecase "View Credit Balance & History" as UC_Balance
+    usecase "Transfer Solar Credits\n(UC-03)" as UC_Transfer #EFF6FF
+    
+    usecase "Validate Credit Balance" as UC_Validate #F0FDF4
+    usecase "Verify Recipient Eligibility" as UC_Verify #F0FDF4
+    usecase "Record Credit Transaction" as UC_Record #F0FDF4
+    
+    usecase "View Billing Offset & Statements" as UC_Billing
+    usecase "Generate Monthly Billing Statement" as UC_GenStatement #FFFBEB
+    
+    usecase "Submit Solar Generation Data" as UC_SubmitData
+    usecase "Generate Reports" as UC_Reports
+}
+
+' Prosumer interactions
+Prosumer --> UC_Login
+Prosumer --> UC_Dashboard
+Prosumer --> UC_Balance
+Prosumer --> UC_Transfer
+Prosumer --> UC_Billing
+
+' Co-op Manager interactions
+Manager --> UC_Login
+Manager --> UC_Dashboard
+Manager --> UC_Reports
+
+' External Systems interactions
+SmartMeter --> UC_SubmitData
+Utility --> UC_GenStatement
+
+' Includes
+UC_Transfer .> UC_Validate : <<include>>
+UC_Transfer .> UC_Verify : <<include>>
+UC_Transfer .> UC_Record : <<include>>
+
+' Extends
+UC_GenStatement .> UC_Billing : <<extend>>
+
+@enduml

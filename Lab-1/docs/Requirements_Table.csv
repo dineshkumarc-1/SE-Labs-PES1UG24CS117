@@ -1,0 +1,15 @@
+ID,Type,Description,Priority,Acceptance Criteria,Rationale
+FR-001,Functional,The system shall record solar generation units (kWh) from smart meter feeds and allow prosumers to transfer surplus credits to neighbor accounts.,High,"Pass: Transferred credits deduct from the prosumer balance and apply to the neighbor billing statement.
+Fail: Transfer exceeding balance.",Enables accurate recording of solar generation and sharing of surplus solar credits.
+FR-002,Functional,The system shall allow prosumer residents to view their available solar credit balance and transaction history.,High,"Pass: The system displays the current credit balance and previous transactions.
+Fail: Incorrect or unavailable balance information is displayed.",Allows prosumers to monitor their available credits and previous transactions.
+FR-003,Functional,The system shall verify that a recipient account is eligible to receive transferred solar credits before completing a credit transfer.,High,"Pass: A transfer proceeds only when the recipient account is valid and eligible.
+Fail: The system rejects transfers to invalid or ineligible recipient accounts.",Prevents credits from being transferred to unauthorized or ineligible community accounts.
+FR-004,Functional,The system shall track monthly utility billing offsets resulting from allocated solar credits.,High,"Pass: The system records and displays the correct billing offset based on allocated solar credits.
+Fail: The displayed billing offset does not reflect the allocated credits.",Enables tracking of the financial benefit obtained through solar credit allocation.
+FR-005,Functional,"The system shall allow the Co-op Manager to generate reports on solar generation, credit allocations, and billing offsets.",Medium,"Pass: The Co-op Manager can generate reports containing solar generation, credit allocation, and billing offset information.
+Fail: Required information is missing or inaccurate.",Helps the Co-op Manager monitor and manage community solar activities.
+NFR-001,Performance & Security,The smart meter telemetry processing pipeline must validate and store hourly generation data for 500 households with 99.9% uptime.,High,"Pass: Benchmarking tests confirm the required latency and security standards under simulated peak load.
+Fail: The system fails to meet the required performance or uptime.",Ensures reliable processing of solar generation data at the required scale.
+NFR-002,Non-functional / Security,"The system shall ensure that only authorized users can access solar generation, credit, and billing information and perform credit allocation operations.",High,"Pass: All tested unauthorized access attempts to protected information and credit allocation operations are denied.
+Fail: Any unauthorized user can access protected information or perform a restricted operation.",Protects user data and prevents unauthorized credit transactions.
