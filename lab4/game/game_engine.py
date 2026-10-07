@@ -48,7 +48,7 @@ class GameEngine:
             for c in range(cols):
                 x = margin + c * (brick_w + gap)
                 y = top + r * (brick_h + gap)
-                bricks.append(Brick(x, y, brick_w, brick_h))
+                bricks.append(Brick(x, y, brick_w, brick_h, row=r))
         return bricks
 
     def handle_event(self, event):
@@ -91,7 +91,7 @@ class GameEngine:
         for brick in self.bricks:
             if brick.alive and self.ball.rect().colliderect(brick.rect()):
                 brick.alive = False
-                self.score += 1
+                self.score += brick.point_value  # Task 4: per-row points
                 self._resolve_collision(brick.rect())
                 break
 
