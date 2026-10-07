@@ -72,21 +72,13 @@ class GameEngine:
             self.ball.vy *= -1
 
         if self.ball.rect().colliderect(self.paddle.rect()):
-            # NOTE: always flips the ball's vertical velocity on a
-            # paddle collision, regardless of which side of the paddle
-            # was actually hit. See Task 1 in the README.
-            self.ball.vy *= -1
+            self._resolve_collision(self.paddle.rect())
 
         for brick in self.bricks:
             if brick.alive and self.ball.rect().colliderect(brick.rect()):
                 brick.alive = False
                 self.score += 1
-                # NOTE: same unconditional vertical-velocity flip as
-                # the paddle collision above - a brick hit from the
-                # left or right should redirect the ball sideways
-                # (flip vx), but this always flips vy instead. See
-                # Task 1 in the README.
-                self.ball.vy *= -1
+                self._resolve_collision(brick.rect())
                 break
 
         if self.ball.y - self.ball.radius > self.height:
@@ -100,6 +92,29 @@ class GameEngine:
         if all(not b.alive for b in self.bricks):
             self.game_over = True
             self.result = "win"
+
+    def _resolve_collision(self, rect):
+        """Determine which side of *rect* the ball hit and flip the
+        appropriate velocity component.
+
+        Strategy: compute how far the ball centre has penetrated the
+        rectangle along each axis.  Whichever axis has the *smaller*
+        overlap is the one the ball entered from, so that is the axis
+        whose velocity we flip.  This correctly handles side-hits
+        (left/right → flip vx) vs. top/bottom hits (flip vy).
+        """
+        ball_rect = self.ball.rect()
+
+        # Penetration depths along each axis
+        overlap_x = min(ball_rect.right, rect.right) - max(ball_rect.left, rect.left)
+        overlap_y = min(ball_rect.bottom, rect.bottom) - max(ball_rect.top, rect.top)
+
+        if overlap_x < overlap_y:
+            # Ball entered from the left or right side
+            self.ball.vx *= -1
+        else:
+            # Ball entered from the top or bottom
+            self.ball.vy *= -1
 
     def _reset_ball(self):
         self.ball.x, self.ball.y = self.width // 2, self.height - 50
