@@ -36,6 +36,9 @@ class GameEngine:
         self.game_over = False
         self.result    = None  # "win" or "lose"
 
+        # Task 3: ball waits on paddle until player presses SPACE
+        self.waiting   = True
+
     def _build_bricks(self, rows, cols):
         bricks = []
         margin, gap, top = 30, 6, 60
@@ -53,6 +56,9 @@ class GameEngine:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_r and self.game_over:
                 self._restart()
+            # Task 3: press SPACE to launch the ball
+            if event.key == pygame.K_SPACE and self.waiting:
+                self.waiting = False
 
     def handle_input(self):
         if self.game_over:
@@ -63,8 +69,13 @@ class GameEngine:
         if keys[pygame.K_RIGHT] or keys[pygame.K_d]:
             self.paddle.move(self.paddle.speed, self.width)
 
+        # Task 3: keep ball sitting on top of paddle while waiting to launch
+        if self.waiting:
+            self.ball.x = self.paddle.x + self.paddle.width // 2
+            self.ball.y = self.paddle.y - self.ball.radius - 1
+
     def update(self):
-        if self.game_over:
+        if self.game_over or self.waiting:   # Task 3: freeze ball until launched
             return
 
         self.ball.move()
@@ -120,7 +131,8 @@ class GameEngine:
             self.ball.vy *= -1
 
     def _reset_ball(self):
-        self.ball.x, self.ball.y = self.width // 2, self.height - 50
+        # Task 3: return to waiting state so player can re-launch
+        self.waiting = True
         self.ball.vx, self.ball.vy = 4, -4
 
     def _restart(self):
@@ -148,6 +160,12 @@ class GameEngine:
         screen.blit(score_text, (10, 10))
         lives_text = self.font.render(f"Lives: {self.lives}", True, WHITE)
         screen.blit(lives_text, (self.width - 130, 10))
+
+        # Task 3: show launch hint while ball is on paddle
+        if self.waiting and not self.game_over:
+            hint = self.font.render("Press SPACE to launch", True, YELLOW)
+            screen.blit(hint, (self.width // 2 - hint.get_width() // 2,
+                               self.height // 2))
 
         if self.game_over:
             overlay = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
