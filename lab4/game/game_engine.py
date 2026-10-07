@@ -5,8 +5,9 @@ from .brick import Brick
 
 # Game Engine
 
-WHITE = (255, 255, 255)
-BG = (15, 15, 25)
+WHITE  = (255, 255, 255)
+YELLOW = (255, 220, 50)
+BG     = (15, 15, 25)
 BRICK_COLORS = [
     (200, 60, 60),
     (200, 140, 60),
@@ -30,9 +31,10 @@ class GameEngine:
 
         self.lives = 3
         self.score = 0
-        self.font = pygame.font.SysFont("Arial", 28)
+        self.font      = pygame.font.SysFont("Arial", 28)
+        self.big_font  = pygame.font.SysFont("Arial", 56, bold=True)
         self.game_over = False
-        self.result = None  # "win" or "lose"
+        self.result    = None  # "win" or "lose"
 
     def _build_bricks(self, rows, cols):
         bricks = []
@@ -47,9 +49,10 @@ class GameEngine:
         return bricks
 
     def handle_event(self, event):
-        # This game only needs continuously-held-key input for the
-        # paddle, handled in handle_input each frame.
-        pass
+        # Task 2: press R to restart after game-over
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_r and self.game_over:
+                self._restart()
 
     def handle_input(self):
         if self.game_over:
@@ -120,6 +123,15 @@ class GameEngine:
         self.ball.x, self.ball.y = self.width // 2, self.height - 50
         self.ball.vx, self.ball.vy = 4, -4
 
+    def _restart(self):
+        """Task 2: full game restart."""
+        self.bricks    = self._build_bricks(self.rows, self.cols)
+        self.lives     = 3
+        self.score     = 0
+        self.game_over = False
+        self.result    = None
+        self._reset_ball()
+
     def render(self, screen):
         screen.fill(BG)
 
@@ -137,10 +149,26 @@ class GameEngine:
         lives_text = self.font.render(f"Lives: {self.lives}", True, WHITE)
         screen.blit(lives_text, (self.width - 130, 10))
 
-        if self.game_over and not getattr(self, "_game_over_logged", False):
-            # NOTE: no proper end screen yet - see Task 2 in the README.
+        if self.game_over:
+            overlay = pygame.Surface((self.width, self.height), pygame.SRCALPHA)
+            overlay.fill((0, 0, 0, 160))
+            screen.blit(overlay, (0, 0))
+
             if self.result == "win":
-                print("You win! Final score:", self.score)
+                msg   = "YOU WIN!"
+                color = YELLOW
             else:
-                print("Game over! Final score:", self.score)
-            self._game_over_logged = True
+                msg   = "GAME OVER"
+                color = (220, 60, 60)
+
+            title = self.big_font.render(msg, True, color)
+            screen.blit(title, (self.width // 2 - title.get_width() // 2,
+                                self.height // 2 - 60))
+
+            score_msg = self.font.render(f"Final Score: {self.score}", True, WHITE)
+            screen.blit(score_msg, (self.width // 2 - score_msg.get_width() // 2,
+                                    self.height // 2 + 10))
+
+            restart_msg = self.font.render("Press R to Restart", True, WHITE)
+            screen.blit(restart_msg, (self.width // 2 - restart_msg.get_width() // 2,
+                                      self.height // 2 + 55))
